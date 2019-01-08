@@ -1,0 +1,70 @@
+version: 2 # use CircleCI 2.0
+jobs:
+  deploy_dev:
+
+    working_directory: ~/eco-middleware-parent-ci # directory where steps will run
+
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8u171-jdk # ...with this image as the primary container; this is where all `steps` will run
+    environment:
+      MAVEN_CLI_OPTS: -s .circleci/.circleci.settings.xml
+
+    steps: # a collection of executable commands
+
+    - checkout # check out source code to working directory
+
+    - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+        # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+        key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
+
+    - run: mvn $MAVEN_CLI_OPTS dependency:go-offline # gets the project dependencies
+
+    - save_cache: # saves the project dependencies
+        paths:
+        - ~/.m2
+        key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
+    - run: mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=DEV-$CIRCLE_BUILD_NUM
+    - run: mvn MAVEN_CLI_OPTS deploy
+
+  deploy_release:
+
+    working_directory: ~/eco-middleware-parent-ci # directory where steps will run
+
+    docker: # run the steps with Docker
+    - image: circleci/openjdk:8u171-jdk # ...with this image as the primary container; this is where all `steps` will run
+    environment:
+      MAVEN_CLI_OPTS: -s .circleci/.circleci.settings.xml
+
+    steps: # a collection of executable commands
+
+    - checkout # check out source code to working directory
+
+    - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+        # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+        key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
+
+    - run: mvn $MAVEN_CLI_OPTS dependency:go-offline # gets the project dependencies
+
+    - save_cache: # saves the project dependencies
+        paths:
+        - ~/.m2
+        key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
+    - run: mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=$CIRCLE_BUILD_NUM
+    - run: mvn MAVEN_CLI_OPTS deploy
+
+workflows:
+  version: 2
+  build_and_deploy_dev:
+    jobs:
+      - deploy_dev:
+        filters:  # using regex filters requires the entire branch to match
+          branches:
+            only:  # only branches matching the below regex filters will run
+            - develop
+  build_and_deploy_release:
+    jobs:
+      - deploy_release:
+        filters:  # using regex filters requires the entire branch to match
+          branches:
+            only:  # only branches matching the below regex filters will run
+            - master
