@@ -108,7 +108,7 @@
             <activation>
                 <property>
                     <name>environment</name>
-                    <value>test</value>
+                    <value>dev</value>
                 </property>
             </activation>
             <properties>
