@@ -24,7 +24,7 @@ jobs:
         - ~/.m2
         key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
     - run: mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=DEV-$CIRCLE_BUILD_NUM
-    - run: mvn MAVEN_CLI_OPTS deploy
+    - run: mvn $MAVEN_CLI_OPTS deploy
 
   deploy_release:
 
@@ -50,7 +50,7 @@ jobs:
         - ~/.m2
         key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
     - run: mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=$CIRCLE_BUILD_NUM
-    - run: mvn MAVEN_CLI_OPTS deploy
+    - run: mvn $MAVEN_CLI_OPTS deploy
 
 workflows:
   version: 2
