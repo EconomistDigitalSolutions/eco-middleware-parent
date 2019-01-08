@@ -56,15 +56,15 @@ workflows:
   version: 2
   build_and_deploy_dev:
     jobs:
-      - deploy_dev:
-        filters:  # using regex filters requires the entire branch to match
-          branches:
-            only:  # only branches matching the below regex filters will run
-            - develop
+    - deploy_dev:
+      filters:  # using regex filters requires the entire branch to match
+        branches:
+          only:  # only branches matching the below regex filters will run
+          - develop
   build_and_deploy_release:
     jobs:
-      - deploy_release:
-        filters:  # using regex filters requires the entire branch to match
-          branches:
-            only:  # only branches matching the below regex filters will run
-            - master
+    - deploy_release:
+      filters:  # using regex filters requires the entire branch to match
+        branches:
+          only:  # only branches matching the below regex filters will run
+          - master
