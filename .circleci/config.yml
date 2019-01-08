@@ -24,7 +24,7 @@ jobs:
         - ~/.m2
         key: eco-middleware-parent-ci-{{ checksum "pom.xml" }}
     - run: mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=DEV-$CIRCLE_BUILD_NUM
-    - run: mvn $MAVEN_CLI_OPTS deploy -Denvironment=dev
+    - run: mvn $MAVEN_CLI_OPTS deploy -DaltReleaseDeploymentRepository=economist.snapshots.repo::default::s3://artifactory-snapshots/
 
   deploy_release:
 
